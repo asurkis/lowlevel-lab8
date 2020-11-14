@@ -59,7 +59,6 @@ sepia_asm:
     ; r11 -- g1 g2 g3 g4
     ; r12 -- b1 b2 b3 b4
 
-%ifdef NOT_DEFINED
     movq xmm0, r10
     movq xmm1, r11
     movq xmm2, r12
@@ -80,9 +79,9 @@ sepia_asm:
     ; Арифметика
 
     ; Загрузка строки
-    mov r13, [rdi+0]
-    mov r14, [rdi+4]
-    mov r15, [rdi+8]
+    mov r13d, [rdi+0]
+    mov r14d, [rdi+4]
+    mov r15d, [rdi+8]
 
     movq xmm3, r13
     movq xmm4, r14
@@ -102,14 +101,13 @@ sepia_asm:
     mulps xmm5, xmm2
 
     ; Сохранение результата
-    movq xmm6, xmm3
-    addps xmm6, xmm4
-    addps xmm6, xmm5
+    addps xmm3, xmm4
+    addps xmm3, xmm5
 
     ; Загрузка строки
-    mov r13, [rdi+12]
-    mov r14, [rdi+16]
-    mov r15, [rdi+20]
+    mov r13d, [rdi+12]
+    mov r14d, [rdi+16]
+    mov r15d, [rdi+20]
 
     movq xmm4, r13
     movq xmm5, r14
@@ -133,9 +131,9 @@ sepia_asm:
     addps xmm4, xmm6
 
     ; Загрузка строки
-    mov r13, [rdi+24]
-    mov r14, [rdi+28]
-    mov r15, [rdi+32]
+    mov r13d, [rdi+24]
+    mov r14d, [rdi+28]
+    mov r15d, [rdi+32]
 
     movq xmm5, r13
     movq xmm6, r14
@@ -158,12 +156,18 @@ sepia_asm:
     addps xmm5, xmm6
     addps xmm5, xmm7
 
+    ; movdqa xmm3, xmm0
+    ; movdqa xmm4, xmm1
+    ; movdqa xmm5, xmm2
+%if 0
+%endif
+
     ; Результаты в xmm3-5
     cvtps2dq xmm3, xmm3
     cvtps2dq xmm4, xmm4
     cvtps2dq xmm5, xmm5
 
-    packusdw xmm3, xmm3
+    packssdw xmm3, xmm3
     packusdw xmm4, xmm4
     packusdw xmm5, xmm5
 
@@ -174,7 +178,6 @@ sepia_asm:
     movq r10, xmm3 ; r1 r2 r3 r4
     movq r11, xmm4 ; g1 g2 g3 g4
     movq r12, xmm5 ; b1 b2 b3 b4
-%endif
 
     ; Упаковка
     mov r13, r10 ; r1
