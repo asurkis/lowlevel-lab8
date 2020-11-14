@@ -53,8 +53,7 @@ int main(int argc, char **argv) {
 #ifndef USE_SSE
   sepia_no_sse(&img);
 #else
-  /* sepia_sse(&img); */
-  sepia_asm(matrix, img.pixels, 0x1f0002);
+  sepia_sse(&img);
 #endif
   /* image_bgr_to_rgb(&img); */
   /* image_rgb_to_bgr(&img); */
