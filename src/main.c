@@ -81,9 +81,9 @@ int main(int argc, char **argv) {
   s2 = res3.ru_utime.tv_sec - res2.ru_utime.tv_sec;
   us1 = res2.ru_utime.tv_usec - res1.ru_utime.tv_usec;
   us2 = res3.ru_utime.tv_usec - res2.ru_utime.tv_usec;
-  printf("Without SSE: %d seconds %06d microseconds\n", s1, us1);
-  printf("With    SSE: %d seconds %06d microseconds\n", s2, us2);
-  printf("(%lf times faster)\n",
+  printf("Without manual SSE: %ld seconds %06ld microseconds\n", s1, us1);
+  printf("With    manual SSE: %ld seconds %06ld microseconds\n", s2, us2);
+  printf("(%f times faster)\n",
          (s1 * 1000000.0f + us1) / (s2 * 1000000.0f + us2));
 
   maxdiff = 0;

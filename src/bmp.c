@@ -149,7 +149,7 @@ enum BmpSaveResult to_bmp(struct ImageRgb8 const *img, FILE *f) {
                                      sizeof(struct Rgb8), img->width, f);
     if (successful_write != img->width) {
       log_err("Could not write enough data");
-      fprintf(stderr, "%lld %lld\n", successful_write, img->width);
+      fprintf(stderr, "%ld %ld\n", successful_write, img->width);
       return BMP_SAVE_WRITE_ERROR;
     }
     if (fwrite(garbage, 1, additional_bytes_per_row, f) !=

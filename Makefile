@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -std=c89 -pedantic-errors # -Wall -Werror
+CFLAGS = -std=c89 -pedantic-errors -Wall -Werror -O3
 AS = nasm
 ASFLAGS = -f elf64
 # AS = gcc

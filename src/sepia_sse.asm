@@ -7,9 +7,12 @@ section .text
 ; rsi -- адрес буфера
 ; rdx -- размер буфера
 sepia_asm:
+    mov [rsp-8], r12
+    mov [rsp-16], r13
+    mov [rsp-24], r14
+    mov [rsp-32], r15
     mov r9, 0xFF000000 ; не влезает в immediate
     ; rsi указывает на начало блока из 4 пикселей, который обрабатываем
-    mov rcx, rdx
   .processing_loop:
     mov eax, [rsi+0] ; r1 g1 b1 r2
     mov r10, rax
@@ -222,6 +225,10 @@ sepia_asm:
     mov [rsi+8], eax ; b3 r4 g4 b4
 
     add rsi, 12
-    dec rcx
+    dec rdx
     jnz .processing_loop
+    mov r12, [rsp-8]
+    mov r13, [rsp-16]
+    mov r14, [rsp-24]
+    mov r15, [rsp-32]
     ret
