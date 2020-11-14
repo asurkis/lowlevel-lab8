@@ -7,62 +7,59 @@ section .text
 ; rsi -- адрес буфера
 ; rdx -- размер буфера
 sepia_asm:
+    mov r9, 0xFF000000 ; не влезает в immediate
     ; rsi указывает на начало блока из 4 пикселей, который обрабатываем
     mov rcx, rdx
   .processing_loop:
-    mov rax, [rsi+0] ; r1 g1 b1 r2
-    mov r9, rax
+    mov eax, [rsi+0] ; r1 g1 b1 r2
     mov r10, rax
     mov r11, rax
     mov r12, rax
-    and r9, 0xFF00
-    and r10, 0xFF
-    and r11, 0xFF00
-    and r12, 0xFF0000
-    shr r9, 16
     shr r11, 8
     shr r12, 16
-    or r10, r9
+    shr rax, 16
+    and r10, 0xFF
+    and r11, 0xFF
+    and r12, 0xFF
+    and rax, 0xFF00
+    or r10, rax
 
-    mov rax, [rsi+4] ; g2 b2 r3 g3
-    mov r9, rax
+    mov eax, [rsi+4] ; g2 b2 r3 g3
     mov r13, rax
     mov r14, rax
     mov r15, rax
-    mov rax, 0xFF000000 ; не влезает в immediate
-    and r9, 0xFF
+    shl r13, 8
+    shr rax, 8
     and r13, 0xFF00
-    and r14, 0xFF0000
-    and r15, rax
-    shl r9, 8
-    shr r15, 8
-    or r11, r9
+    and r14, 0xFF00
+    and r15, 0xFF0000
+    and rax, 0xFF0000
+    or r11, r13
+    or r12, r14
+    or r10, r15
+    or r11, rax
+
+    mov eax, [rsi+8] ; b3 r4 g4 b4
+    mov r13, rax
+    mov r14, rax
+    mov r15, rax
+    shl r13, 16
+    shl r14, 16
+    shl r15, 8
+    and r13, 0xFF0000
+    and r14, r9
+    and r15, r9
+    and rax, r9
     or r12, r13
     or r10, r14
     or r11, r15
-
-    mov rax, [rsi+8] ; b3 r4 g4 b4
-    mov r9, rax
-    mov r13, rax
-    mov r14, rax
-    mov r15, rax
-    mov rax, 0xFF000000 ; не влезает в immediate
-    and r9, 0xFF
-    and r13, 0xFF00
-    and r14, 0xFF0000
-    and r15, rax
-    shl r9, 16
-    shl r13, 16
-    shl r14, 8
-    or r12, r9
-    or r10, r13
-    or r11, r14
-    or r12, r15
+    or r12, rax
 
     ; r10 -- r1 r2 r3 r4
     ; r11 -- g1 g2 g3 g4
     ; r12 -- b1 b2 b3 b4
 
+%ifdef NOT_DEFINED
     movq xmm0, r10
     movq xmm1, r11
     movq xmm2, r12
@@ -177,57 +174,55 @@ sepia_asm:
     movq r10, xmm3 ; r1 r2 r3 r4
     movq r11, xmm4 ; g1 g2 g3 g4
     movq r12, xmm5 ; b1 b2 b3 b4
+%endif
 
     ; Упаковка
-    mov rax, r10
-    mov r13, r11
-    mov r14, r12
-    mov r15, r10
-    and rax, 0xFF
+    mov r13, r10 ; r1
+    mov r14, r11 ; g1
+    mov r15, r12 ; b1
+    mov rax, r10 ; r2
     and r13, 0xFF
     and r14, 0xFF
-    and r15, 0xFF00
-    shl r13, 8
-    shl r14, 16
-    shl r15, 16
-    or r14, r15
-    or rax, r13
-    or rax, r14
-    mov [rsi+4], rax ; r1 g1 b1 r2
-
-    mov rax, r11
-    mov r13, r12
-    mov r14, r10
-    mov r15, r11
+    and r15, 0xFF
     and rax, 0xFF00
-    and r13, 0xFF00
-    and r14, 0xFF0000
-    and r15, 0xFF0000
-    shr rax, 8
-    shl r15, 8
+    shl r14, 8
+    shl r15, 16
+    shl rax, 16
     or r14, r15
     or rax, r13
     or rax, r14
-    mov [rsi+0], rax ; g2 b2 r3 g3
+    mov [rsi+0], eax ; r1 g1 b1 r2
 
-    mov rax, r12
-    mov r13, r10
-    mov r14, r11
-    mov r15, r12
-    shr rax, 16
-    shr r13, 16
-    shr r14, 8
-    mov r9, 0xFF000000 ; не влезает в immediate
-    and rax, 0xFF
+    mov r13, r11 ; g2
+    mov r14, r12 ; b2
+    mov r15, r10 ; r3
+    mov rax, r11 ; g3
     and r13, 0xFF00
-    and r14, 0xFF0000
-    and r15, r9
+    and r14, 0xFF00
+    and r15, 0xFF0000
+    and rax, 0xFF0000
+    shr r13, 8
+    shl rax, 8
     or r14, r15
     or rax, r13
     or rax, r14
-    mov [rsi+8], rax ; b3 r4 g4 b4
-%ifdef NOT_DEFINED
-%endif
+    mov [rsi+4], eax ; g2 b2 r3 g3
+
+    mov r13, r12 ; b3
+    mov r14, r10 ; r4
+    mov r15, r11 ; g4
+    mov rax, r12 ; b4
+    and r13, 0xFF0000
+    and r14, r9
+    and r15, r9
+    and rax, r9
+    shr r13, 16
+    shr r14, 16
+    shr r15, 8
+    or r14, r15
+    or rax, r13
+    or rax, r14
+    mov [rsi+8], eax ; b3 r4 g4 b4
 
     add rsi, 12
     dec rcx
