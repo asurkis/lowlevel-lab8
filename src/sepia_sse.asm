@@ -156,12 +156,6 @@ sepia_asm:
     addps xmm5, xmm6
     addps xmm5, xmm7
 
-    ; movdqa xmm3, xmm0
-    ; movdqa xmm4, xmm1
-    ; movdqa xmm5, xmm2
-%if 0
-%endif
-
     ; Результаты в xmm3-5
     cvtps2dq xmm3, xmm3
     cvtps2dq xmm4, xmm4
